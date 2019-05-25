@@ -3,8 +3,8 @@
 #include <typeinfo>
 #include <list>
 #include <iterator>
-
-
+#include <vector>
+#include <queue>
 class autoturism{
 	float lungime;
 	unsigned nr_persoane_transportate;
@@ -14,6 +14,7 @@ class autoturism{
 	bool van=0;
 	public:
 	autoturism(float x=3.5,unsigned y=4) {lungime=x, nr_persoane_transportate=y;};
+	autoturism(autoturism &x){lungime=x.lungime; nr_persoane_transportate=x.nr_persoane_transportate;mic_litraj=x.mic_litraj; masina_de_oras=x.masina_de_oras; masina_usor_de_folosit=x.masina_usor_de_folosit; van=x.van;}
 	float get_lungime(){return lungime;}
 	unsigned get_nr_persoane(){return nr_persoane_transportate;}
 	void set_lungime(float x){lungime=x;}
@@ -38,11 +39,11 @@ class autoturism{
 	}
 	~autoturism();
 };
-
 class MINI:public autoturism
 {
 	public:
 	MINI(float x=3.5,unsigned y=4):autoturism(x,y){set_mic_litraj();}
+	MINI(MINI &x){set_lungime(x.get_lungime());set_nr_persoane(x.get_nr_persoane());if(x.get_mic_litraj())set_mic_litraj();if(x.get_masina_de_oras())set_masina_de_oras(); if(x.get_masina_usor_de_folosit())set_masina_usor_de_folosit();if(x.get_van())set_van();}
 	~MINI(){};
 	virtual void citire(){int x,y;std::cin>>x>>y; set_lungime(x); set_nr_persoane(y);}
 	virtual void afisare(){std::cout<<"Masina mini\nLungime: "<<get_lungime()<<" cu nr persoane:"<<get_nr_persoane()<<"\n";}
@@ -56,11 +57,11 @@ class MINI:public autoturism
 		return *this;
 	}
 };
-
 class MICA:public autoturism
 {
 	public:
 	MICA(float x=3.85,unsigned y=4):autoturism(x,y){set_masina_de_oras();}
+	MICA(MICA &x){set_lungime(x.get_lungime());set_nr_persoane(x.get_nr_persoane());if(x.get_mic_litraj())set_mic_litraj();if(x.get_masina_de_oras())set_masina_de_oras(); if(x.get_masina_usor_de_folosit())set_masina_usor_de_folosit();if(x.get_van())set_van();}
 	~MICA(){};
 	void citire(){int x,y;std::cin>>x>>y; set_lungime(x); set_nr_persoane(y);}
 	void afisare(){std::cout<<"Masina mica\nLungime: "<<get_lungime()<<" cu nr persoane:"<<get_nr_persoane()<<"\n";}
@@ -74,11 +75,11 @@ class MICA:public autoturism
 		return *this;
 	}
 };
-
 class COMPACTA:public autoturism
 {
 	public:
 	COMPACTA(float x=4.2,unsigned y=4):autoturism(x,y){set_masina_usor_de_folosit();}
+	COMPACTA(COMPACTA &x){set_lungime(x.get_lungime());set_nr_persoane(x.get_nr_persoane());if(x.get_mic_litraj())set_mic_litraj();if(x.get_masina_de_oras())set_masina_de_oras(); if(x.get_masina_usor_de_folosit())set_masina_usor_de_folosit();if(x.get_van())set_van();}
 	~COMPACTA(){};
 	void citire(){int x,y;std::cin>>x>>y; set_lungime(x); set_nr_persoane(y);}
 	void afisare(){std::cout<<"Masina compacta\nLungime: "<<get_lungime()<<" cu nr persoane:"<<get_nr_persoane()<<"\n";}
@@ -92,11 +93,11 @@ class COMPACTA:public autoturism
 		return *this;
 	}
 };
-
 class MONOVOLUMELE:public autoturism
 {
 	public:
 	MONOVOLUMELE(float x=4,unsigned y=5):autoturism(x,y){set_van();}
+	MONOVOLUMELE(MONOVOLUMELE &x){set_lungime(x.get_lungime());set_nr_persoane(x.get_nr_persoane());if(x.get_mic_litraj())set_mic_litraj();if(x.get_masina_de_oras())set_masina_de_oras(); if(x.get_masina_usor_de_folosit())set_masina_usor_de_folosit();if(x.get_van())set_van();}
 	~MONOVOLUMELE(){};
 	void citire(){int x,y;std::cin>>x>>y; set_lungime(x); set_nr_persoane(y);}
 	void afisare(){std::cout<<"Masina monovolum\nLungime: "<<get_lungime()<<" cu nr persoane:"<<get_nr_persoane()<<"\n";}
@@ -110,15 +111,13 @@ class MONOVOLUMELE:public autoturism
 		return *this;
 	}
 };
-
-
 template <class T>
 class vanzare{
 	static unsigned nr_total_masini;
 	static unsigned nr_masini_vandute;
 	std::list<T*> masini_vandute; 
 	std::list<T*> masini_ramase; 
-public:
+ public:
 	vanzare(){}
 	friend void operator -=(vanzare &X, MINI &ob)
 	{
@@ -161,7 +160,6 @@ public:
 				{X.masini_ramase.erase(it);break;}
 	}
 	~vanzare(){}
-
 };
 template <class T>
 unsigned vanzare<T>::nr_total_masini=100;
